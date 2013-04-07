@@ -1,18 +1,17 @@
 // WiCS University -- server
 
 Meteor.startup(function () {
-  if (Events.find().count() === 0) {
-    var events = [
-      {owner: "Gaby", title: "Sleepover"},
-      {owner: "Sally", title: "Hang Out"},
-      {owner: "Ankha", title: "Hackathon"},
-      {owner: "Melanie", title: "Tea Party"}
-    ];
-    for (var i=0; i < events.length; i++) {
-      Events.insert(events[i]);
-    }
-  }
-    
+  // if (Events.find().count() === 0) {
+  //   var events = [
+  //     {owner: "Gaby", title: "Sleepover"},
+  //     {owner: "Sally", title: "Hang Out"},
+  //     {owner: "Ankha", title: "Hackathon"},
+  //     {owner: "Melanie", title: "Tea Party"}
+  //   ];
+  //   for (var i=0; i < events.length; i++) {
+  //     Events.insert(events[i]);
+  //   }
+  // }
 });
 
 Meteor.publish("directory", function () {

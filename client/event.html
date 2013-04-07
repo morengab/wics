@@ -1,0 +1,21 @@
+<template name="event_page">
+  <a href="/">Back</a>
+  {{#with event}}
+  <h2>{{title}}</h2>
+  <ul>
+    <a href="#" class="edit">Edit</a>
+    <li>Owner: {{owner}}</li>
+
+    <li>Date: {{date}}</li>
+
+    <li>Description: {{description}}</li>
+
+    <li>Cost: {{cost}}</li>
+    <li>Planning: {{planning}}</li>
+
+    <li>Ratings: {{ratings}}</li>
+    <li>Comments: {{comments}}</li>
+    <li>Like: {{likes}}</li>
+  </ul>
+  {{/with}}
+</template>

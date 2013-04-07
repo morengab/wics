@@ -1,0 +1,19 @@
+<template name="user_page">
+  <a href="/">Back</a>
+    {{#with user}}
+      {{#each emails}}
+        <h2>{{address}}</h2>
+      {{/each}}
+    {{/with}}
+
+  <ul class="nav nav-pills">
+    <li><a href="#">About</a></li>
+    <li><a href="#">Likes</a></li>
+    <li><a href="#">Templates</a></li>
+  </ul>
+</template>
+
+
+<template name="like_history">
+  MAILIKES!
+</template>

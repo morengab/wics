@@ -1,16 +1,17 @@
-/*
-  Events -- Data Model
-  Loaded on both the client and the Model
-  
-  A simple event model - each event is represented by a 
-  document in the Events collection:
-  owner: user id
-  title, description: String
-  date: Date
-  likes: Array of user id's that like this event
-  comments: tbd
+/**
+* Event Model 
+* 
+* owner: user_id
+* title: String
+* description: String
+* date: Date
+* state: Boolean ("brainstorm vs active")
+* likes: Array of user_id's that like this event
+* ratings: Array of rating objects?
+* comments: Array of comment objects?
 */
 
+// Define Minimongo collections to match server/publish.js.
 Events = new Meteor.Collection("events");
 
 Events.allow({
@@ -55,8 +56,13 @@ Meteor.methods({
     return Events.insert({
       owner: this.userId,
       title: options.title,
-      date: new Date(),
+      date: options.date,
       description: options.description,
+      //bunnyfoofoo: bunnyfoofoo,
+      cost: options.cost,
+      planning: options.planning,
+      ratings: [],
+      comments: [],
       likes: [],
     });
   }

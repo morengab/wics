@@ -1,0 +1,18 @@
+<template name="home_page">
+    <ul class="thumbnails">
+      {{#each event_thumbs}}
+        {{> event_thumb}}
+      {{/each}}
+    </ul>
+</template>
+
+<template name="event_thumb">
+  <li class="span2">
+    <div class="thumbnail">
+        <img src="http://placehold.it/200x200" alt="">
+        <h3 class="title"><a href="/event/{{event_id}}">{{title}}</a></h3>
+        <p><a href="/user/{{user_id}}">{{user_id}}</a></p>
+    </div>
+  <li>
+</template>
+
