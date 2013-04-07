@@ -2,7 +2,7 @@ WiCS
 ====
 
 Goals: 
-- [] Implement multipaging
+- [X] Implement multipaging
 - [] Implement the detail view
 - [] Implement editing (time to plan, cost)
 - [] Implement ratings
