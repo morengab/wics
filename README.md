@@ -3,8 +3,8 @@ WiCS
 
 Goals: 
 - [X] Implement multipaging
-- [] Implement editing (time to plan, cost)
-- [] Implement the detail view
+- [X] Implement editing (time to plan, cost)
+- [X] Implement the detail view
 - [] Implement ratings
 - [] Implement comments
 - [] Implement states
