@@ -1,4 +1,9 @@
 <template name="event_page">
+
+  {{#if show_edit_event_dialog}}
+    {{> edit_event_dialog}}
+  {{/if}}
+
   <a href="/">Back</a>
   {{#with event}}
   <h2>{{title}}</h2>
@@ -9,6 +14,8 @@
     <li>Date: {{date}}</li>
 
     <li>Description: {{description}}</li>
+
+    <li>Brainstorm state: {{brainstorm_state}}</li>
 
     <li>Cost: {{cost}}</li>
     <li>Planning: {{planning}}</li>

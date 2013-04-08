@@ -1,10 +1,16 @@
 /**
-* Client side code
+* CLIENT SIDE CODE
 *
 */
 
-//ID of currently selected event
+// ID of currently selected event
 Session.setDefault('event_id', null);
+
+// ID of currently selected user
+Session.setDefault('user_id', null);
+
+// When editing an event, ID of the event
+Session.setDefault('editing_event_id', null);
 
 Meteor.subscribe("directory");
 Meteor.subscribe("events");
@@ -96,6 +102,19 @@ Template.event_page.helpers({
   event: function () {
     var event_id = Session.get("event_id");
     return Events.findOne({_id: event_id});
+  },
+
+  show_edit_event_dialog: function () {
+    return Session.get("show_edit_event_dialog");
+  }
+});
+
+Template.event_page.events({
+  'click .edit': function () {
+    var event_id = Session.get("event_id");
+    Session.set("editing_event_id", event_id);
+    Session.set("edit_event_error", null);
+    Session.set("show_edit_event_dialog", true);
   }
 });
 
@@ -114,29 +133,43 @@ Template.user_page.helpers({
 * Create Event Dialog Template 
 *
 */
+
 Template.createEventDialog.events({
+
   'click .save': function (event, template) {
     var title = template.find(".title").value;
     var date = template.find(".date").value;
     var description = template.find(".description").value;
-    //var bunnyfoofoo = template.find(".bunny").value;
-    var cost = template.find("[name=costRadios]").value;
-    var planning = template.find("[name=planningRadios]").value;
-    if (title.length && description.length) {
+    var brainstorm_state = template.find(".brainstorm_state").checked;
+    var cost = getChecked(template, "[name=costRadios]");
+    var planning = getChecked(template, "[name=planningRadios]");
+    
+    if (title.length) {
       Meteor.call('createEvent', {
         title: title,
         date: date,
         description: description,
-        //bunnyfoofoo: bunnyfoofoo,
+        brainstorm_state: brainstorm_state,
         cost: cost, 
         planning: planning
+      }, function (error, event) {
+        if (! error) {
+          // what to do after user has created an event
+          // open some dialog?
+        }
       });
       Session.set("showCreateEventDialog", false);
-    } else {
+    } 
+    else {
       Session.set("createEventError", 
-        "Give your event a title and description.");
+        "Give your event a title.");
     }
   },
+
+  // 'click .validate': function (event, template) {
+    
+  // },
+
   'click .cancel': function () {
     Session.set("showCreateEventDialog", false);
   }
@@ -144,4 +177,98 @@ Template.createEventDialog.events({
 
 Template.createEventDialog.error = function () {
   return Session.get("createEventError");
+}
+
+/**
+* Edit Event Dialog Template
+*
+*/
+Template.edit_event_dialog.helpers({
+  event: function () {
+    var event_id = Session.get("editing_event_id");
+    return Events.findOne({_id: event_id});
+  },
+
+  brainstormIsChecked: function () {
+    var event = Events.findOne(Session.get("editing_event_id"));
+    return event.brainstorm_state;
+  },
+
+  selectedCostIs: function (cost) {
+    var event = Events.findOne(Session.get("editing_event_id"));
+    return event.cost === cost;  
+  },
+
+  selectedTimeIs: function (time) {
+    var event = Events.findOne(Session.get("editing_event_id"));
+    return event.planning === time;  
+  }
+});
+
+Template.edit_event_dialog.events({
+  'click .update': function (event, template) {
+    var title = template.find(".title").value;
+    var date = template.find(".date").value;
+    var description = template.find(".description").value;
+    var brainstorm_state = template.find(".brainstorm_state").checked;
+    var cost = getChecked(template, "[name=costRadios]");
+    var planning = getChecked(template, "[name=planningRadios]");
+    
+    var event_id = Session.get("editing_event_id");
+    var user_id = Meteor.userId();
+
+    if (title.length) {
+      Meteor.call('editEvent', 
+        event_id, 
+        user_id,
+      {
+        title: title,
+        date: date,
+        description: description,
+        brainstorm_state: brainstorm_state,
+        cost: cost, 
+        planning: planning
+      }, function (error, event) {
+        if (! error) {
+          // what to do after user has created an event
+          // open some dialog?
+        }
+      });
+      Session.set("show_edit_event_dialog", false);
+    } 
+    else {
+      Session.set("createEventError", 
+        "Give your event a title.");
+    }
+  },
+
+  // 'click .validate': function (event, template) {
+
+  // },
+
+  'click .cancel': function () {
+    Session.set("show_edit_event_dialog", false);
+  }
+});
+
+/**
+* Helper functions
+*
+*/
+
+/**
+* Finds a checked input element (ex: radio, checkbox) 
+* and returns its value.
+*
+* @method getChecked
+* @param {String} query A CSS selector
+* @param {Object} template A Meteor template (ex: dialog template)
+* @return {String} Returns value or null
+*/
+function getChecked(template, query) {
+  var result = template.findAll(query);
+  for (var i=0; i < result.length; i++) {
+    if (result[i].checked)
+      return result[i].value;
+  }
 }
