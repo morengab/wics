@@ -1,19 +1,7 @@
-WiCS
+WiCS University
 ====
+An event browing platform. Allows clubs with similar goals and interest to stay updated about what events other clubs in the community are hosting. 
 
-Goals: 
-- [X] Implement multipaging
-- [X] Implement editing (time to plan, cost)
-- [X] Implement the detail view
-- [] Implement states
-- [] Implement user profile
-- [] Implement like
-- [] Implement like history
-- [] Implement "save"
-- [] Implement create from template
-- [] Prettyifying
-- [] Implement delete
-- [] Implement upload pictures
-- [in progress, postponed] Implement ratings
-- [in progress, postponed] Implement comments
+Built using the Meteor.js open source platform.
 
+See the wics.meteor.com page for a live example. 
