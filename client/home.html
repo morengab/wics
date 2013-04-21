@@ -9,10 +9,17 @@
 <template name="event_thumb">
   <li class="span2">
     <div class="thumbnail">
-        <img src="http://placehold.it/200x200" alt="">
-        <h3 class="title"><a href="/event/{{event_id}}">{{title}}</a></h3>
-        <p><a href="/user/{{user_id}}">{{user_id}}</a></p>
+        <a href="/event/{{event_id}}"><img width="200px" height="200px" src="{{image_url}}" alt=""></a>
+        <h4 class="title"><a href="/event/{{event_id}}">{{title}}</a></h4>
+        <p>
+          <span>{{_id}}</span>
+          <a href="/user/{{user_id}}">{{user_name}}</a> &bull;
+          <span class="likes">{{likes.length}} Likes</span> &bull;
+          <a href="#" class="like">Like</a> &bull;
+          <span class="likes">{{saves.length}} Saves</span> &bull;
+          <a href="#" class="save">Save</a> &bull;
+          <a href="#" class="delete">Delete</a>
+        </p>
     </div>
-  <li>
+  </li>
 </template>
-

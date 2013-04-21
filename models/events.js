@@ -5,11 +5,12 @@
 * title: String
 * description: String
 * date: Date
-* state: Boolean ("brainstorm vs active")
+* state: Boolean ("brainstorm vs active") <-- delete this
+* mode: live OR draft OR template
 * likes: Array of user_id's that like this event
-* ratings: Array of rating objects?
-* comments: Array of comment objects?
-* saves: Array of template objects? 
+* ratings: Array of rating objects
+* comments: Array of comment objects
+* saves: Array of template objects
 */
 
 // Define Minimongo collections to match server/publish.js.
@@ -26,7 +27,7 @@ Events.allow({
       return false; // not the owner
 
     var allowed = ["title", "description", "date",
-      "brainstorm_state", "cost", "planning"];
+      "brainstorm_state", "cost", "planning", "likes", "saves"];
 
     if (_.difference(fields, allowed).length)
       return false; // tried to write to forbidden field
@@ -60,17 +61,20 @@ Meteor.methods({
       throw new Meteor.Error(403, "You must be logged in!");
 
     return Events.insert({
+      timstamp: Date.now(),
       owner: this.userId,
       title: options.title,
       date: options.date,
       description: options.description,
-      brainstorm_state: options.brainstorm_state,
       cost: options.cost,
       planning: options.planning,
+      mode: options.mode,
+      image_url: options.image_url,
       ratings: [],
       comments: [],
       likes: [],
-      saves: []
+      saves: [],
+      history: options.history,
     });
   },
 
@@ -87,7 +91,8 @@ Meteor.methods({
           description: options.description,
           brainstorm_state: options.brainstorm_state,
           cost: options.cost,
-          planning: options.planning
+          planning: options.planning,
+          image_url: options.image_url
         }
       },
       function (error) {

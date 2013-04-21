@@ -1,25 +1,39 @@
 <template name="page">
 
-  {{#if showCreateEventDialog}}
-    {{> createEventDialog}}
+  {{#if show_create_event_dialog}}
+    {{> create_event_dialog}}
   {{/if}}
+
+  <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="/">WiCS University</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="create"><a href="#">Create Event</a></li>
+              <li class="draft"><a href="#">Draft Event</a></li>
+              {{#with user}}
+              <li class="me"><a href="/user/{{_id}}">{{profile.name}}</a></li>
+              {{/with}}
+            </ul>
+            <form class="navbar-form pull-right">
+              {{loginButtons}}
+            </form>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
 
   <div class="container">
     <div class="row">
       <div class="span1"> </div>
 
       <div class="span10">
-        <div class="header row">
-          <div class="span5">
-            <h1 >WiCS University</h1>
-            <a href="#" class="btn btn-primary add">Add Event</a>
-          </div>
-          <div class="span5">
-            <div>
-              {{loginButtons}}
-            </div>
-          </div>
-        </div>
 
         <div class="row">
           <div class="span10">

@@ -1,81 +1,5 @@
-/**
-* CLIENT SIDE CODE
-*
-*/
-
-// ID of currently selected event
-Session.setDefault('event_id', null);
-
-// ID of currently selected user
-Session.setDefault('user_id', null);
-
-// When editing an event, ID of the event
-Session.setDefault('editing_event_id', null);
-
-Meteor.subscribe("directory");
-Meteor.subscribe("events");
-
-/**
-* Routing
-*
-*/
-var Router = Backbone.Router.extend({
-  routes: {
-    "":                 "main",   //http://wics.meteor.com/
-    "event/:id":        "event",  //http://wics.meteor.com/event/123
-    "user/:id":        "user",    //http://wics.meteor.com/user/123
-  },
-
-  main: function() {
-    Session.set("current_page", "home_page");
-  },
-
-  event: function(event_id) {
-    Session.set("current_page", "event_page");
-    Session.set("event_id", event_id);
-  },
-
-  user: function(user_id) {
-    Session.set("current_page", "user_page");
-    Session.set("user_id", user_id);
-    Session.set("current_user", Meteor.users.find({_id: user_id}));
-  }
-});
-
-var app = new Router;
-Meteor.startup(function () {
-  Backbone.history.start({pushState: true});
-});
-
-/**
-* Page Template
-* 
-*/
-Template.page.pageIs = function (page) {
-  return Session.get("current_page") === page;  
-};
-
-Template.page.showCreateEventDialog = function () {
-  return Session.get("showCreateEventDialog");
-};
-
-Template.page.events({
-  'click .add': function () {
-    Session.set("createEventError", null);
-    Session.set("showCreateEventDialog", true);
-  }
-});
-
-/**
-* Home Page Template 
-*
-*/
-Template.home_page.event_thumbs = function () {
-  return Events.find();
-};
-
-/**
-* Event Thumb Helper Template (for Home Page)
+/********************************************************
+* Event Thumb Helper Template
 *
 */
 Template.event_thumb.helpers({
@@ -85,16 +9,86 @@ Template.event_thumb.helpers({
 
   user_id: function () {
     return this.owner;
+  },
+
+  user_name: function () {
+    var event_owner = Meteor.users.findOne(this.owner);
+    if (event_owner.profile && event_owner.profile.name)
+      return event_owner.profile.name;
+    else 
+      return event_owner.emails[0].address;
   }
 });
 
 Template.event_thumb.events({
-  'click': function () {
-    Session.set("event_id", this._id);
+  'click .like': function () {
+    var e = this;
+
+    Events.update(
+      e._id, 
+      {
+        $push: { likes: { userId: Meteor.userId() }}
+      });
+
+    Meteor.users.update(
+      Meteor.userId(), 
+      {
+        $push: { "profile.likes": { eventId: e._id, timestamp: Date.now() }}
+      }
+    );
+  },
+
+  'click .save': function () {
+    var orig_event = this;
+    
+    var title = orig_event.title;
+    var date = orig_event.date;
+    var description = orig_event.description;
+    var cost = orig_event.cost;
+    var planning = orig_event.planning;
+    var mode = 'template';
+    var image_url = orig_event.image_url;
+    var history = orig_event._id;
+
+    if (title.length) {
+      Meteor.call('createEvent', {
+        title: title,
+        date: date,
+        description: description,
+        cost: cost,
+        planning: planning,
+        mode: mode,
+        image_url: image_url,
+        history: history
+      }, function (error, new_event_id) {
+        if (! error) {
+          Events.update(
+            orig_event._id, 
+            {
+              $push: { 
+                saves: {
+                  user_id: Meteor.userId(),
+                  event_id: new_event_id,
+                  timestamp: Date.now() }}
+            }
+          );
+        }
+      });
+    } 
+    else {
+      // error checking goes here
+    }    
+  },
+
+  //TODO: limit saves and likes to one per user
+
+  'click .delete': function () {
+    Events.remove(this._id);
   }
 });
 
-/**
+
+/********************************************************
 * Event Page Template 
 *
 */
@@ -118,68 +112,69 @@ Template.event_page.events({
   }
 });
 
-/**
-* User Page Template 
-*
-*/
-Template.user_page.helpers({
-  user: function () {
-    var user_id = Session.get("user_id");
-    return Meteor.users.findOne({_id: user_id});
-  }
-});
 
-/**
+/********************************************************
 * Create Event Dialog Template 
 *
 */
+Template.template_option.events({
+  
+});
 
-Template.createEventDialog.events({
+Template.create_event_dialog.events({
+  'click .create_template': function () {
+    console.log("hi")
+  },
 
-  'click .save': function (event, template) {
+  'click .create': function (event, template) {
     var title = template.find(".title").value;
     var date = template.find(".date").value;
     var description = template.find(".description").value;
-    var brainstorm_state = template.find(".brainstorm_state").checked;
     var cost = getChecked(template, "[name=costRadios]");
     var planning = getChecked(template, "[name=planningRadios]");
-    
+    var image_url = template.find(".image_url").value;
+
     if (title.length) {
       Meteor.call('createEvent', {
         title: title,
         date: date,
         description: description,
-        brainstorm_state: brainstorm_state,
         cost: cost, 
-        planning: planning
+        planning: planning,
+        image_url: image_url,
+        mode: 'live'
       }, function (error, event) {
         if (! error) {
           // what to do after user has created an event
           // open some dialog?
+          Session.set("show_create_event_dialog", false);
         }
       });
-      Session.set("showCreateEventDialog", false);
     } 
     else {
-      Session.set("createEventError", 
+      Session.set("create_event_error", 
         "Give your event a title.");
     }
   },
 
-  // 'click .validate': function (event, template) {
-    
-  // },
-
   'click .cancel': function () {
-    Session.set("showCreateEventDialog", false);
+    Session.set("show_create_event_dialog", false);
   }
 });
 
-Template.createEventDialog.error = function () {
-  return Session.get("createEventError");
+Template.create_event_dialog.error = function () {
+  return Session.get("create_event_error");
 }
 
-/**
+Template.create_event_dialog.helpers({
+  'template_options': function () {
+    var user_id = Meteor.userId();
+    return Events.find({ owner: user_id, mode: 'template'});
+  }
+});
+
+
+/********************************************************
 * Edit Event Dialog Template
 *
 */
@@ -213,7 +208,7 @@ Template.edit_event_dialog.events({
     var brainstorm_state = template.find(".brainstorm_state").checked;
     var cost = getChecked(template, "[name=costRadios]");
     var planning = getChecked(template, "[name=planningRadios]");
-    
+    //var image = template.find(".image_url").value;
     var event_id = Session.get("editing_event_id");
     var user_id = Meteor.userId();
 
@@ -242,16 +237,13 @@ Template.edit_event_dialog.events({
     }
   },
 
-  // 'click .validate': function (event, template) {
-
-  // },
-
   'click .cancel': function () {
     Session.set("show_edit_event_dialog", false);
   }
 });
 
-/**
+
+/********************************************************
 * Helper functions
 *
 */
