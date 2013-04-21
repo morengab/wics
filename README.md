@@ -1,6 +1,8 @@
 WiCS University
 ====
-An event browing platform. Allows clubs with similar goals and interest to stay updated about what events other clubs in the community are hosting. 
+An event browing platform.
+
+Allows clubs with similar goals and interests to share events and gain ideas off each other. Also includes club and member profiles for club networking.
 
 Built using the Meteor.js open source platform.
 
