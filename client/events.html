@@ -1,0 +1,24 @@
+<template name="event_page">
+  {{#if show_edit_event_dialog}}
+    {{> edit_event_dialog}}
+  {{/if}}
+
+  {{#with event}}
+    <h2>{{title}}</h2> 
+    <a href="#" class="edit">Edit Event</a>
+    <p><a href="/event/{{_id}}"><img src="{{image_url}}" alt=""></a></p>
+    <p class="lead">Description: {{description}}</p>
+    
+    {{#if brainstorm_state}}
+    <p>Currently in brainstorming phase</p>
+    {{/if}}
+
+    <dl>
+      <dt>Date:</dt> <dd>{{date}}</dd>
+      <dt>Cost:</dt> <dd>{{cost}}</dd>
+      <dt>Planning:</dt> <dd>{{planning}}</dd>
+    </dl>
+  {{/with}}
+</template>
+    
+

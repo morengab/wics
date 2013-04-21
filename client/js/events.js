@@ -1,16 +1,11 @@
 /********************************************************
-* Event Thumb Helper Template
+* Event Thumbs
 *
 */
 Template.event_thumb.helpers({
-  event_id: function () {
-    return this._id;
-  }, 
 
-  user_id: function () {
-    return this.owner;
-  },
-
+  // Returns the name of the event creator
+  // If creator has no name, return email address
   user_name: function () {
     var event_owner = Meteor.users.findOne(this.owner);
     if (event_owner.profile && event_owner.profile.name)
@@ -21,6 +16,8 @@ Template.event_thumb.helpers({
 });
 
 Template.event_thumb.events({
+
+  // Adds an event to the user's history of likes
   'click .like': function () {
     var e = this;
 
@@ -38,6 +35,7 @@ Template.event_thumb.events({
     );
   },
 
+  // Saves an event to the user's list of templates
   'click .save': function () {
     var orig_event = this;
     
@@ -82,6 +80,7 @@ Template.event_thumb.events({
 
   //TODO: limit saves and likes to one per user
 
+  // Deletes an event 
   'click .delete': function () {
     Events.remove(this._id);
   }
@@ -89,21 +88,26 @@ Template.event_thumb.events({
 
 
 /********************************************************
-* Event Page Template 
+* Event Page
 *
 */
 Template.event_page.helpers({
+
+  // Returns an event given an id
   event: function () {
     var event_id = Session.get("event_id");
     return Events.findOne({_id: event_id});
   },
 
+  // Checks if edit event dialog should appear
   show_edit_event_dialog: function () {
     return Session.get("show_edit_event_dialog");
   }
 });
 
+
 Template.event_page.events({
+  // Sets global settings for edit modal dialog to appear
   'click .edit': function () {
     var event_id = Session.get("event_id");
     Session.set("editing_event_id", event_id);
@@ -114,18 +118,11 @@ Template.event_page.events({
 
 
 /********************************************************
-* Create Event Dialog Template 
+* Create Event Dialog 
 *
 */
-Template.template_option.events({
-  
-});
-
 Template.create_event_dialog.events({
-  'click .create_template': function () {
-    console.log("hi")
-  },
-
+  // Creates a new event from scratch
   'click .create': function (event, template) {
     var title = template.find(".title").value;
     var date = template.find(".date").value;
@@ -156,17 +153,20 @@ Template.create_event_dialog.events({
         "Give your event a title.");
     }
   },
-
+  // Cancel creating the event
   'click .cancel': function () {
     Session.set("show_create_event_dialog", false);
   }
 });
 
+
 Template.create_event_dialog.error = function () {
   return Session.get("create_event_error");
 }
 
+
 Template.create_event_dialog.helpers({
+  // Returns a user's event templates
   'template_options': function () {
     var user_id = Meteor.userId();
     return Events.find({ owner: user_id, mode: 'template'});
@@ -175,7 +175,7 @@ Template.create_event_dialog.helpers({
 
 
 /********************************************************
-* Edit Event Dialog Template
+* Edit Event Dialog
 *
 */
 Template.edit_event_dialog.helpers({
@@ -200,7 +200,10 @@ Template.edit_event_dialog.helpers({
   }
 });
 
+
 Template.edit_event_dialog.events({
+
+  // Saves any edits made to the event by the owner
   'click .update': function (event, template) {
     var title = template.find(".title").value;
     var date = template.find(".date").value;
@@ -208,7 +211,7 @@ Template.edit_event_dialog.events({
     var brainstorm_state = template.find(".brainstorm_state").checked;
     var cost = getChecked(template, "[name=costRadios]");
     var planning = getChecked(template, "[name=planningRadios]");
-    //var image = template.find(".image_url").value;
+    var image_url = template.find(".image_url").value;
     var event_id = Session.get("editing_event_id");
     var user_id = Meteor.userId();
 
@@ -222,6 +225,7 @@ Template.edit_event_dialog.events({
         description: description,
         brainstorm_state: brainstorm_state,
         cost: cost, 
+        image_url: image_url,
         planning: planning
       }, function (error, event) {
         if (! error) {
@@ -237,8 +241,40 @@ Template.edit_event_dialog.events({
     }
   },
 
+  // Cancels the process of making an edit to an event
   'click .cancel': function () {
     Session.set("show_edit_event_dialog", false);
+  }
+});
+
+
+/********************************************************
+* Templates
+*
+*/
+Template.template_option.events({
+  'click': function () {
+    // Get template to populate form input values
+    var t = this;
+
+    $('.modal .title').val(t.title);
+    $('.modal .image_url').val(t.image_url);
+    $('.modal .date').val(t.date);
+    $('.modal .description').val(t.description);
+
+    // Populate cost radio button
+    var costVal = t.cost;
+    if (costVal) {
+      var q = ".modal [value='"+costVal+"']";
+      $(q).prop('checked', true);
+    }
+
+    // Populate planning radio button
+    var timeVal = t.planning;
+    if (timeVal) {
+      var q = ".modal [value='"+timeVal+"']";
+      $(q).prop('checked', true); 
+    }
   }
 });
 
@@ -249,13 +285,8 @@ Template.edit_event_dialog.events({
 */
 
 /**
-* Finds a checked input element (ex: radio, checkbox) 
+* Finds a checked input element from a Meteor template 
 * and returns its value.
-*
-* @method getChecked
-* @param {String} query A CSS selector
-* @param {Object} template A Meteor template (ex: dialog template)
-* @return {String} Returns value or null
 */
 function getChecked(template, query) {
   var result = template.findAll(query);
@@ -263,4 +294,10 @@ function getChecked(template, query) {
     if (result[i].checked)
       return result[i].value;
   }
+}
+
+function getCheckedFromHTML(html, query) {
+  var result = $(q);
+
+  console.log(string)
 }

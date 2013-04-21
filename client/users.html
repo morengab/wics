@@ -1,0 +1,66 @@
+<template name="user_page">
+
+  {{#if show_edit_user_dialog}}
+    {{> edit_user_dialog}}
+  {{/if}}
+  
+  <h2>{{user_name}}</h2>
+
+  <ul class="nav nav-pills">
+    <li><a href="#" class="my_profile">About</a></li>
+    <li><a href="#" class="my_events">Events</a></li>
+    <li><a href="#" class="my_templates">Templates</a></li>
+    <li><a href="#" class="my_likes">Likes</a></li>
+  </ul>
+
+  {{#if sectionIs "my_profile"}}
+    {{> my_profile}}
+  {{/if}}
+
+  {{#if sectionIs "my_likes"}}
+    {{> my_likes}}
+  {{/if}}
+
+  {{#if sectionIs "my_templates"}}
+    {{> my_templates}}
+  {{/if}}
+
+  {{#if sectionIs "my_events"}}
+    {{> my_events}}
+  {{/if}}
+</template>
+
+<template name="my_profile">
+  <a href="#" class="edit">Edit</a>
+  {{#with profile}}
+    <p>profile info here</p>
+  {{/with}}
+  
+</template>
+
+<template name="my_likes">
+  <h3>Likes</h3>
+  <ul class="thumbnails">
+    {{#each likes}}
+      {{> event_thumb}}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="my_templates">
+  <h3>Templates</h3>
+  <ul class="thumbnails"> 
+    {{#each templates}}
+      {{> event_thumb}}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="my_events">
+  <h3>Events</h3>
+  <ul class="thumbnails">
+    {{#each events}}
+      {{> event_thumb}}
+    {{/each}}
+  </ul>
+</template>

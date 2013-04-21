@@ -1,0 +1,30 @@
+<!--
+    Editing Profile Dialog 
+ -->
+ <template name="edit_user_dialog">
+  <div class="mask"> </div>
+  <div class="modal">
+    <div class="modal-header">
+      <button type="button" class="close cancel">&times;</button>
+      <h3>Edit Profile</h3>
+    </div>
+
+    <div class="modal-body">
+      {{#with user}}
+        <label>username</label>
+        <input type="text" class="username span3" value="{{#if profile.username}}{{profile.username}}{{/if}}">
+
+        <label>name</label>
+        <input type="text" class="name span3" value="{{#if profile.name}}{{profile.name}}{{/if}}">
+      {{/with}}
+    </div>
+
+    <div class="modal-footer">
+      <a href="#" class="btn cancel">Cancel</a>
+      <!--       
+      <a href="#" class="btn btn-primary validate">Validate Profile</a>
+       -->      
+      <a href="#" class="btn btn-primary update">Update Profile</a>
+    </div>
+  </div>
+</template>

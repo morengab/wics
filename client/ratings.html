@@ -1,0 +1,39 @@
+<!-- Saving this for later -->
+
+
+<template name="ratings">
+  <!-- average rating -->
+  <p>{{average}}</p>
+  <!-- num ratings -->
+  <p>{{total}}</p>
+  <!-- rating input  -->
+  <!-- show some sort of inline input?
+  or modal -->
+  {{> rateEventForm}}
+</template>
+
+<template name="rate_event_form">
+  <div class="input-append">
+    <label class="radio inline">
+      <input type="radio" name="ratingsRadios" id="ratingsRadios1" value="1">
+      1
+    </label>
+    <label class="radio inline">
+      <input type="radio" name="ratingsRadios" id="ratingsRadios2" value="2">
+        2
+    </label>
+    <label class="radio inline">
+      <input type="radio" name="ratingsRadios" id="ratingsRadios3" value="3">
+        3
+    </label>
+    <label class="radio inline">
+      <input type="radio" name="ratingsRadios" id="ratingsRadios4" value="4">
+        4
+    </label>
+    <label class="radio inline">
+      <input type="radio" name="ratingsRadios" id="ratingsRadios5" value="5">
+        5
+    </label>
+    <button class="btn" type="button">Rate</button>
+  </div>
+</template>

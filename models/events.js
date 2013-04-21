@@ -26,8 +26,17 @@ Events.allow({
     if (userId !== event.owner)
       return false; // not the owner
 
-    var allowed = ["title", "description", "date",
-      "brainstorm_state", "cost", "planning", "likes", "saves"];
+    var allowed = [
+      "title", 
+      "image_url",
+      "description", 
+      "date",
+      "brainstorm_state", 
+      "cost", 
+      "planning", 
+      "likes", 
+      "saves"
+    ];
 
     if (_.difference(fields, allowed).length)
       return false; // tried to write to forbidden field
@@ -96,8 +105,8 @@ Meteor.methods({
         }
       },
       function (error) {
-        if (! error)
-          console.log(event)
+        if (! error){}
+          
         else
           console.log("error updating")
       });
