@@ -4,6 +4,10 @@ Session.setDefault('event_id', null);
 // ID of currently selected user
 Session.setDefault('user_id', null);
 
+// When creating an event from template,
+// the id of that template
+Session.setDefault('creating_from_template', null);
+
 // When editing an event, ID of the event
 Session.setDefault('editing_event_id', null);
 

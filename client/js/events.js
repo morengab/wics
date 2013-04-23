@@ -122,7 +122,7 @@ Template.event_page.events({
 *
 */
 Template.create_event_dialog.events({
-  // Creates a new event from scratch
+  
   'click .create': function (event, template) {
     var title = template.find(".title").value;
     var date = template.find(".date").value;
@@ -131,31 +131,66 @@ Template.create_event_dialog.events({
     var planning = getChecked(template, "[name=planningRadios]");
     var image_url = template.find(".image_url").value;
 
-    if (title.length) {
-      Meteor.call('createEvent', {
-        title: title,
-        date: date,
-        description: description,
-        cost: cost, 
-        planning: planning,
-        image_url: image_url,
-        mode: 'live'
-      }, function (error, event) {
-        if (! error) {
-          // what to do after user has created an event
-          // open some dialog?
-          Session.set("show_create_event_dialog", false);
+    // Update fields and switch to live mode if creating from scratch
+    if (Session.get("creating_from_template")) {
+      console.log("template")
+      var event_id = Session.get('creating_from_template');
+      Events.update(
+        {_id: event_id},
+        {
+          $set: {
+            title: title,
+            date: date, 
+            description: description,
+            cost: cost,
+            planning: planning,
+            image_url: image_url,
+            mode: 'live'
+          }
+        }, 
+        function (error) {
+          if (!error) {
+            Session.set("show_create_event_dialog", false);
+            Session.set("creating_from_template", null);
+            console.log("done! template")
+          } 
         }
-      });
-    } 
+      );
+    }
+    // Otherwise, create event from scratch in live mode
     else {
-      Session.set("create_event_error", 
-        "Give your event a title.");
+      console.log("scratch")
+      if (title.length) {
+        Meteor.call('createEvent', {
+          title: title,
+          date: date,
+          description: description,
+          cost: cost, 
+          planning: planning,
+          image_url: image_url,
+          mode: 'live'
+        },
+        function (error) {
+          if (! error) {
+            Session.set("show_create_event_dialog", false);
+          }
+        });
+      }
+      else {
+        // An event needs at least a title to be created
+        Session.set("create_event_error", "Give your event a title.");
+      }
     }
   },
+
+  'click .validate': function () {
+    console.log(Session.get('creating_from_template'))
+  },
+
   // Cancel creating the event
   'click .cancel': function () {
     Session.set("show_create_event_dialog", false);
+    Session.set("creating_from_template", null);
   }
 });
 
@@ -275,6 +310,9 @@ Template.template_option.events({
       var q = ".modal [value='"+timeVal+"']";
       $(q).prop('checked', true); 
     }
+
+    Session.set("creating_from_template", t._id);
+    console.log(t._id)
   }
 });
 
@@ -294,10 +332,4 @@ function getChecked(template, query) {
     if (result[i].checked)
       return result[i].value;
   }
-}
-
-function getCheckedFromHTML(html, query) {
-  var result = $(q);
-
-  console.log(string)
 }

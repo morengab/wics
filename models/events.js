@@ -23,23 +23,28 @@ Events.allow({
   }, 
 
   update: function (userId, event, fields, modifier) {
-    if (userId !== event.owner)
+    if (userId !== event.owner) {
+      console.log('denied')
       return false; // not the owner
-
+    }
+      
     var allowed = [
       "title", 
       "image_url",
       "description", 
       "date",
       "brainstorm_state", 
-      "cost", 
+      "cost",
+      "mode", 
       "planning", 
       "likes", 
       "saves"
     ];
 
-    if (_.difference(fields, allowed).length)
+    if (_.difference(fields, allowed).length) {
+      console.log('denied')
       return false; // tried to write to forbidden field
+    }
 
     // A good improvement would be to validate the type of the new
     // value of the field (and if a string, the length.) In the

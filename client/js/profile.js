@@ -78,7 +78,7 @@ Template.my_profile.events({
 Template.my_events.helpers({
   events: function () {
     var user_id = Session.get("user_id");
-    return Events.find({owner: user_id, mode: 'live'});
+    return Events.find({ owner: user_id, mode: 'live' });
   }
 });
 
@@ -89,10 +89,7 @@ Template.my_events.helpers({
 Template.my_templates.helpers({
   'templates': function () {
     var user_id = Session.get("user_id");    
-    return Events.find({
-      owner: user_id,
-      mode: 'template'
-    });
+    return Events.find({ owner: user_id, mode: 'template' });
   }
 });
 
