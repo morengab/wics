@@ -7,3 +7,18 @@ Allows clubs with similar goals and interests to share events and gain ideas off
 Built using the Meteor.js open source platform.
 
 See the wics.meteor.com page for a live example. 
+
+
+Motivation
+
+Goals
+
+Features
+
+Use Cases (Case study)
+
+Other applications:
+
+
+Final Presentation: slides 
+
