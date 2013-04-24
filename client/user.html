@@ -10,6 +10,7 @@
     <li><a href="#" class="my_profile">About</a></li>
     <li><a href="#" class="my_events">Events</a></li>
     <li><a href="#" class="my_templates">Templates</a></li>
+    <li><a href="#" class="my_drafts">Drafts</a></li>
     <li><a href="#" class="my_likes">Likes</a></li>
   </ul>
 
@@ -23,6 +24,10 @@
 
   {{#if sectionIs "my_templates"}}
     {{> my_templates}}
+  {{/if}}
+
+  {{#if sectionIs "my_drafts"}}
+    {{> my_drafts}}
   {{/if}}
 
   {{#if sectionIs "my_events"}}
@@ -60,6 +65,15 @@
   <h3>Events</h3>
   <ul class="thumbnails">
     {{#each events}}
+      {{> event_thumb}}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="my_drafts">
+  <h3>Drafts</h3>
+  <ul class="thumbnails">
+    {{#each drafts}}
       {{> event_thumb}}
     {{/each}}
   </ul>

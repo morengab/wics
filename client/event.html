@@ -6,6 +6,11 @@
   {{#with event}}
     <h2>{{title}}</h2> 
     <a href="#" class="edit">Edit Event</a>
+    
+    {{#if modeIs "draft"}}
+    <a href="#" class="publish">Publish Event</a>
+    {{/if}}
+
     <p><a href="/event/{{_id}}"><img src="{{image_url}}" alt=""></a></p>
     <p class="lead">Description: {{description}}</p>
     

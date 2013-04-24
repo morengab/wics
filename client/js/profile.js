@@ -45,6 +45,10 @@ Template.user_page.events({
 
   'click .my_events' : function () {
     Session.set("current_section", "my_events");
+  },
+
+  'click .my_drafts' : function () {
+    Session.set("current_section", "my_drafts");
   }
 });
 
@@ -90,6 +94,17 @@ Template.my_templates.helpers({
   'templates': function () {
     var user_id = Session.get("user_id");    
     return Events.find({ owner: user_id, mode: 'template' });
+  }
+});
+
+/**
+* My Drafts (section) Template 
+*
+*/
+Template.my_drafts.helpers({
+  'drafts': function () {
+    var user_id = Session.get("user_id");    
+    return Events.find({ owner: user_id, mode: 'draft' });
   }
 });
 

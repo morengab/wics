@@ -6,19 +6,21 @@ Template.page.pageIs = function (page) {
   return Session.get("current_page") === page;  
 };
 
-Template.page.show_create_event_dialog = function () {
-  return Session.get("show_create_event_dialog");
-};
 
 Template.page.helpers({
-  'userId': function () {
-    return Meteor.userId();
-  },
-
   'user': function () {
     return Meteor.user();
+  },
+
+  'show_create_event_dialog': function () {
+    return Session.get("show_create_event_dialog");
+  },
+
+  'show_draft_event_dialog': function () {
+    return Session.get("show_draft_event_dialog");
   }
 });
+
 
 Template.page.events({
   'click .create': function () {

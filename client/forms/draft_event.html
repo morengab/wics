@@ -1,0 +1,61 @@
+<!-- A dialog for drafting events -->
+<template name="draft_event_dialog">
+  <div class="mask"> </div>
+  <div class="modal">
+    <div class="modal-header">
+      <button type="button" class="close cancel">&times;</button>
+      <h3>Draft Event</h3>
+    </div>
+
+    <div class="modal-body">
+      {{#if error}}
+      <div class="alert alert-error">{{error}}</div>
+      {{/if}}
+
+      <label>Title</label>
+      <input type="text" class="title span3" value="">
+
+      <label>Image</label>
+      <input type="text" class="image_url span3" value="">
+
+      <label>Date</label>
+      <input type="text" class="date span3" value="">
+
+      <label>Description</label>
+      <textarea class="description span3"></textarea>
+
+      <label>Cost of Event (~estimate)</label>
+      <label class="radio inline">
+        <input type="radio" name="costRadios" id="costRadio1" value="50"> $50
+      </label>
+      <label class="radio inline">
+        <input type="radio" name="costRadios" id="costRadio2" value="100"> $100
+      </label>
+      <label class="radio inline">
+        <input type="radio" name="costRadios" id="costRadio3" value="500"> $500+
+      </label>
+
+      <label>Time to Plan (~about)</label>
+      <label class="radio inline">
+        <input type="radio" name="planningRadios" id="planningRadio1" value="hour"> An hour
+      </label>
+      <label class="radio inline">
+        <input type="radio" name="planningRadios" id="planningRadio2" value="day"> A day
+      </label>
+      <label class="radio inline">
+        <input type="radio" name="planningRadios" id="planningRadio3" value="week"> A week
+      </label>
+      <label class="radio inline">
+        <input type="radio" name="planningRadios" id="planningRadio4" value="month"> A month
+      </label>
+      <label class="radio inline">
+        <input type="radio" name="planningRadios" id="planningRadio5" value="semester"> Semester+
+      </label>
+    </div>
+
+    <div class="modal-footer">`
+      <a href="#" class="btn cancel">Cancel</a>
+      <a href="#" class="btn btn-primary draft">Draft Event</a>
+    </div>
+  </div>
+</template>

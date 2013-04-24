@@ -102,6 +102,13 @@ Template.event_page.helpers({
   // Checks if edit event dialog should appear
   show_edit_event_dialog: function () {
     return Session.get("show_edit_event_dialog");
+  },
+
+  // Returns the mode of the current event
+  modeIs: function (mode) {
+    var event_id = Session.get("event_id");
+    var event = Events.findOne(event_id);
+    return mode === event.mode;
   }
 });
 
@@ -113,6 +120,15 @@ Template.event_page.events({
     Session.set("editing_event_id", event_id);
     Session.set("edit_event_error", null);
     Session.set("show_edit_event_dialog", true);
+  },
+
+  'click .publish': function () {
+    var event_id = Session.get("event_id");
+    Events.update(
+      {_id: event_id},
+      {
+        $set: { mode: 'live' }
+      });
   }
 });
 
@@ -133,7 +149,6 @@ Template.create_event_dialog.events({
 
     // Update fields and switch to live mode if creating from scratch
     if (Session.get("creating_from_template")) {
-      console.log("template")
       var event_id = Session.get('creating_from_template');
       Events.update(
         {_id: event_id},
@@ -152,14 +167,12 @@ Template.create_event_dialog.events({
           if (!error) {
             Session.set("show_create_event_dialog", false);
             Session.set("creating_from_template", null);
-            console.log("done! template")
           } 
         }
       );
     }
     // Otherwise, create event from scratch in live mode
     else {
-      console.log("scratch")
       if (title.length) {
         Meteor.call('createEvent', {
           title: title,
@@ -207,6 +220,58 @@ Template.create_event_dialog.helpers({
     return Events.find({ owner: user_id, mode: 'template'});
   }
 });
+
+
+/********************************************************
+* Draft Event Dialog 
+*
+*/
+Template.draft_event_dialog.events({
+  
+  'click .draft': function (event, template) {
+    var title = template.find(".title").value;
+    var date = template.find(".date").value;
+    var description = template.find(".description").value;
+    var cost = getChecked(template, "[name=costRadios]");
+    var planning = getChecked(template, "[name=planningRadios]");
+    var image_url = template.find(".image_url").value;
+
+    if (title.length) {
+        Meteor.call('createEvent', {
+          title: title,
+          date: date,
+          description: description,
+          cost: cost, 
+          planning: planning,
+          image_url: image_url,
+          mode: 'draft'
+        },
+        function (error) {
+          if (! error) {
+            Session.set("show_draft_event_dialog", false);
+          }
+        });
+      }
+      else {
+        // An event needs at least a title to be drafted
+        Session.set("draft_event_error", "Give your event a title.");
+      }
+   
+  },
+
+  'click .validate': function () {
+  },
+
+  // Cancel creating the event
+  'click .cancel': function () {
+    Session.set("show_draft_event_dialog", false);
+  }
+});
+
+
+Template.draft_event_dialog.error = function () {
+  return Session.get("draft_event_error");
+}
 
 
 /********************************************************
@@ -312,7 +377,6 @@ Template.template_option.events({
     }
 
     Session.set("creating_from_template", t._id);
-    console.log(t._id)
   }
 });
 
