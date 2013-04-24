@@ -308,7 +308,6 @@ Template.edit_event_dialog.events({
     var title = template.find(".title").value;
     var date = template.find(".date").value;
     var description = template.find(".description").value;
-    var brainstorm_state = template.find(".brainstorm_state").checked;
     var cost = getChecked(template, "[name=costRadios]");
     var planning = getChecked(template, "[name=planningRadios]");
     var image_url = template.find(".image_url").value;
@@ -323,7 +322,6 @@ Template.edit_event_dialog.events({
         title: title,
         date: date,
         description: description,
-        brainstorm_state: brainstorm_state,
         cost: cost, 
         image_url: image_url,
         planning: planning

@@ -103,7 +103,6 @@ Meteor.methods({
           title: options.title,
           date: options.date,
           description: options.description,
-          brainstorm_state: options.brainstorm_state,
           cost: options.cost,
           planning: options.planning,
           image_url: options.image_url
