@@ -5,16 +5,16 @@
 * title: String
 * description: String
 * date: Date
-* state: Boolean ("brainstorm vs active") <-- delete this
 * mode: live OR draft OR template
 * likes: Array of user_id's that like this event
 * ratings: Array of rating objects
-* comments: Array of comment objects
+* comments: Array of comment objects <-- am i keeping this?
 * saves: Array of template objects
 */
 
 // Define Minimongo collections to match server/publish.js.
 Events = new Meteor.Collection("events");
+Comments = new Meteor.Collection("comments");
 
 // Define what users are allowed to modify in the database
 Events.allow({
@@ -33,12 +33,12 @@ Events.allow({
       "image_url",
       "description", 
       "date",
-      "brainstorm_state", 
       "cost",
       "mode", 
       "planning", 
       "likes", 
-      "saves"
+      "saves",
+      "comments"
     ];
 
     if (_.difference(fields, allowed).length) {
@@ -110,7 +110,6 @@ Meteor.methods({
       },
       function (error) {
         if (! error){}
-          
         else
           console.log("error updating")
       });

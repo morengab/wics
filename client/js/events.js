@@ -20,7 +20,6 @@ Template.event_thumb.events({
   // Adds an event to the user's history of likes
   'click .like': function () {
     var e = this;
-
     Events.update(
       e._id, 
       {
@@ -112,7 +111,6 @@ Template.event_page.helpers({
   }
 });
 
-
 Template.event_page.events({
   // Sets global settings for edit modal dialog to appear
   'click .edit': function () {
@@ -131,6 +129,68 @@ Template.event_page.events({
       });
   }
 });
+
+/********************************************************
+* Comments
+*
+*/
+
+// Returns an event map that handles the "escape" and "return" keys and
+// "blur" events on a text input (given by selector) and interprets them
+// as "ok" or "cancel".
+var okCancelEvents = function (selector, callbacks) {
+  var ok = callbacks.ok || function () {};
+  var cancel = callbacks.cancel || function () {};
+
+  var events = {};
+  events['keyup '+selector+', keydown '+selector+', focusout '+selector] =
+    function (evt) {
+      if (evt.type === "keydown" && evt.which === 27) {
+        // escape = cancel
+        cancel.call(this, evt);
+
+      } else if (evt.type === "keyup" && evt.which === 13 ||
+                 evt.type === "focusout") {
+        // blur/return/enter = ok/submit if non-empty
+        var value = String(evt.target.value || "");
+        if (value)
+          ok.call(this, value, evt);
+        else
+          cancel.call(this, evt);
+      }
+    };
+
+  return events;
+};
+
+Template.comments.events(okCancelEvents(
+  '#new-comment',
+  {
+    ok: function (text, evt) {
+      var event_id = Session.get("event_id");
+      Events.update(
+        event_id, 
+        {
+          $push: {
+            comments: {
+              text: text,
+              user_id: Meteor.userId(),
+              event_id: Session.get('event_id'),
+              timestamp: (new Date()).getTime()
+            }
+          }
+        }
+      );
+      evt.target.value = '';
+    }
+  }));
+
+Template.comments.event = function () {
+  var evt = Events.findOne(Session.get('event_id'));
+  if (evt)
+    return evt;
+  else return null;
+}
 
 
 /********************************************************
@@ -207,11 +267,9 @@ Template.create_event_dialog.events({
   }
 });
 
-
 Template.create_event_dialog.error = function () {
   return Session.get("create_event_error");
 }
-
 
 Template.create_event_dialog.helpers({
   // Returns a user's event templates
@@ -259,15 +317,11 @@ Template.draft_event_dialog.events({
    
   },
 
-  'click .validate': function () {
-  },
-
   // Cancel creating the event
   'click .cancel': function () {
     Session.set("show_draft_event_dialog", false);
   }
 });
-
 
 Template.draft_event_dialog.error = function () {
   return Session.get("draft_event_error");
@@ -284,11 +338,6 @@ Template.edit_event_dialog.helpers({
     return Events.findOne({_id: event_id});
   },
 
-  brainstormIsChecked: function () {
-    var event = Events.findOne(Session.get("editing_event_id"));
-    return event.brainstorm_state;
-  },
-
   selectedCostIs: function (cost) {
     var event = Events.findOne(Session.get("editing_event_id"));
     return event.cost === cost;  
@@ -299,7 +348,6 @@ Template.edit_event_dialog.helpers({
     return event.planning === time;  
   }
 });
-
 
 Template.edit_event_dialog.events({
 

@@ -1,6 +1,6 @@
 // WiCS University -- server
 
-Meteor.startup(function () {
+// Meteor.startup(function () {
   // if (Events.find().count() === 0) {
   //   var events = [
   //     {owner: "Gaby", title: "Sleepover"},
@@ -12,13 +12,32 @@ Meteor.startup(function () {
   //     Events.insert(events[i]);
   //   }
   // }
-});
+// });
 
+/********************************************************
+* Users and profiles
+* 
+*/
 Meteor.publish("directory", function () {
   return Meteor.users.find({}, {fields: {emails: 1, profile: 1}});
 });
 
+
+/********************************************************
+* Events
+* 
+*/
 // Publish complete set of events to all clients
 Meteor.publish("events", function () {
   return Events.find();
+});
+
+
+/********************************************************
+* Comments
+* 
+*/
+//Publish all comments for requested event_id
+Meteor.publish('comments', function () {
+  return Comments.find();
 });
