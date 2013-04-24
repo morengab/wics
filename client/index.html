@@ -1,5 +1,77 @@
-<template name="page">
+<head>
+  <title>WiCS University</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+</head>
+
+<body>  
+    {{>header}}
+    {{>page}}   
+</body>
+
+<template name="header">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand logo" href="/" id="logo">WiCS University</a>
+            <ul class="nav">
+              <li>
+                <div class="navbar-search">
+                  <input class="search-box search-query" type="text" placeholder="Search">
+                </div>
+              </li>
+              <li class="create"><a href="#">+</a></li>
+              <li class="draft"><a href="#">~</a></li>
+            </ul>
+            {{loginButtons}}
+           
+        </div>
+      </div>
+    </div>
+</template>
+
+<template name="user_info">
+    <ul class="nav pull-right">
+        {{#if currentUser}}
+            {{> user_loggedin}}
+        {{else}}
+            {{> user_loggedout}}
+        {{/if}}
+    </ul>
+</template>
+
+<template name="user_loggedin">
+    <!-- {{#if loggingIn}}
+        <li><a>Logging in ...</a></li>
+    {{else}}
+        <li>
+            <img class="img-rounded" style="height:32px; margin-top:4px;" src="{{currentUser.profile.avatar_url}}"/> 
+        </li>
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                {{currentUser.profile.login}}
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a>Account Settings</a></li>
+                <li class="divider"></li>
+                <li><a id="logout">Logout</a></li>
+            </ul>
+        </li>
+    {{/if}} -->
+</template>
+
+<template name="user_loggedout">
+    <!-- <li><a id="login">Login with Github</a></li> -->
+</template>
+
+<template name="page">
   {{#if show_create_event_dialog}}
     {{> create_event_dialog}}
   {{/if}}
@@ -7,33 +79,6 @@
   {{#if show_draft_event_dialog}}
     {{> draft_event_dialog}}
   {{/if}}
-
-  <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand logo" href="/" id="logo">WiCS University</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="create"><a href="#">+</a></li>
-              <li class="draft"><a href="#">~</a></li>
-              <li>
-                <div class="navbar-search">
-                  <input class="search-box search-query" type="text" placeholder="Search">
-                </div>
-              </li>
-              <!-- 
-              with user
-              <li class="me"><a href="/user/{{_id}}">{{profile.name}}</a></li>
-              with
-              -->
-            </ul>
-            <form class="navbar-form pull-right">
-              {{loginButtons}}
-            </form>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
 
   <div class="container">
     <div class="row">

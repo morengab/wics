@@ -1,7 +1,33 @@
 /**
-* Page Template
+* Header Template
 * 
 */
+
+Template.user_loggedout.events({
+  "click #login": function (e, tmp) {
+    Meteor.loginWithFacebook({
+      requestPermissions: ['email', 'user_about_me']
+    }, function (err) {
+        if (err) {
+          // error handling
+        } else {
+          // show an alert
+        }
+    });
+  }
+});
+
+Template.user_loggedin.events({
+  "click #logout": function (e, tmp) {
+    Meteor.logout(function (err) {
+      if (err) {
+        // show err message
+      } else {
+        // show alert that says logged out
+      }
+    });
+  }
+});
 
 // Returns an event map that handles the "escape" and "return" keys and
 // "blur" events on a text input (given by selector) and interprets them
@@ -32,14 +58,6 @@ var okCancelEvents = function (selector, callbacks) {
 };
 
 Template.page.helpers({
-  'user': function () {
-    return Meteor.user();
-  },
-
-  'pageIs': function (page) {
-    return Session.get("current_page") === page;
-  },
-
   'show_create_event_dialog': function () {
     return Session.get("show_create_event_dialog");
   },
@@ -49,8 +67,7 @@ Template.page.helpers({
   }
 });
 
-
-Template.page.events({
+Template.header.events({
   'click .create': function () {
     Session.set("create_event_error", null);
     Session.set("show_create_event_dialog", true);
@@ -62,7 +79,7 @@ Template.page.events({
   }
 });
 
-Template.page.events(okCancelEvents(
+Template.header.events(okCancelEvents(
   '.search-box',
   {
     ok: function (text, evt) {
@@ -70,6 +87,17 @@ Template.page.events(okCancelEvents(
       app.navigate('search/'+text, {trigger: true});
     }
   }));
+
+
+/**
+* Page Template 
+*
+*/
+Template.page.helpers({
+  'pageIs': function (page) {
+    return Session.get("current_page") === page;
+  }
+});
 
 
 /**
