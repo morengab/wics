@@ -8,23 +8,24 @@
     {{> draft_event_dialog}}
   {{/if}}
 
-  <div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
           <a class="brand logo" href="/" id="logo">WiCS University</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="create"><a href="#">Create Event</a></li>
-              <li class="draft"><a href="#">Draft Event</a></li>
-              {{#with user}}
-              <li class="me"><a href="/user/{{_id}}">{{profile.name}}</a></li>
-              {{/with}}
+              <li class="create"><a href="#">+</a></li>
+              <li class="draft"><a href="#">~</a></li>
               <li>
-                <div class="input-append">
-                  <input class="span2 search-box" id="appendedInput" type="text">
-                  <span class="add-on"><i class="go-search icon-search"></i></span>
+                <div class="navbar-search">
+                  <input class="search-box search-query" type="text" placeholder="Search">
                 </div>
               </li>
+              <!-- 
+              with user
+              <li class="me"><a href="/user/{{_id}}">{{profile.name}}</a></li>
+              with
+              -->
             </ul>
             <form class="navbar-form pull-right">
               {{loginButtons}}
