@@ -81,11 +81,11 @@ Template.home_page.event_thumbs = function () {
   if (query) {
     return Events.find({
       title: {$regex: ".*"+query+".*", $options: 'i'},
-      mode: 'live'
+      mode: {$in: ['live', 'draft']}
     });
   }
   else {
-    return Events.find({mode: 'live'});
+    return Events.find({mode: {$in: ['live', 'draft']}});
   }
 };
 
