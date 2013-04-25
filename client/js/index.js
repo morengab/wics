@@ -6,7 +6,16 @@
 Template.user_loggedout.events({
   "click #login": function (e, tmp) {
     Meteor.loginWithFacebook({
-      requestPermissions: ['email', 'user_about_me']
+      requestPermissions: [
+        'email', 
+        'user_about_me',
+        'user_education_history',
+        'user_events',
+        'user_hometown',
+        'user_location',
+        'user_website',
+        'user_work_history'
+      ]
     }, function (err) {
         if (err) {
           // error handling

@@ -10,9 +10,9 @@
     </style>
 </head>
 
-<body>  
+<body> 
     {{>header}}
-    {{>page}}   
+    {{>page}}
 </body>
 
 <template name="header">
@@ -29,8 +29,7 @@
               <li class="create"><a href="#">+</a></li>
               <li class="draft"><a href="#">~</a></li>
             </ul>
-            {{loginButtons}}
-           
+            {{>user_info}}
         </div>
       </div>
     </div>
@@ -47,7 +46,7 @@
 </template>
 
 <template name="user_loggedin">
-    <!-- {{#if loggingIn}}
+    {{#if loggingIn}}
         <li><a>Logging in ...</a></li>
     {{else}}
         <li>
@@ -55,7 +54,7 @@
         </li>
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                {{currentUser.profile.login}}
+                {{currentUser.profile.name}}
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
@@ -64,11 +63,11 @@
                 <li><a id="logout">Logout</a></li>
             </ul>
         </li>
-    {{/if}} -->
+    {{/if}}
 </template>
 
 <template name="user_loggedout">
-    <!-- <li><a id="login">Login with Github</a></li> -->
+    <li><a id="login">Login with Facebook</a></li>
 </template>
 
 <template name="page">
