@@ -28,6 +28,7 @@
               </li>
               <li class="create"><a href="#">+</a></li>
               <li class="draft"><a href="#">~</a></li>
+              <!-- <li class="populate"><a>POPDAT!</a></li> -->
             </ul>
             {{> user_info}}
         </div>
@@ -100,16 +101,47 @@
 </template>
 
 <template name="home_page">
+
+    {{> filter}}
+
+    <div class="row">
     <ul class="thumbnails">
-      {{#each event_thumbs}}
-        {{> event_thumb}}
-      {{/each}}
+        {{#if currentUser}}
+          {{#each event_thumbs}}
+            {{> event_thumb}}
+          {{/each}}
+      {{/if}}
     </ul>
+</div>
+</template>
+
+<template name="filter">
+    <div class="row filter-container">
+        <div class="filter-toggle">
+            <select name="costOptions">
+              <option value="">Cost</option>
+              <option value="50">$50</option>
+              <option value="100">$100</option>
+              <option value="500">$500+</option>
+            </select>
+            <select name="planningOptions">
+              <option value="">Planning Ahead</option>
+              <option value="hour">An hour</option>
+              <option value="day">Days</option>
+              <option value="week">Weeks</option>
+              <option value="month">Months</option>
+              <option value="semester">Semester+</option>
+            </select>
+            <button class="btn filter">Filter</button>
+        </div>
+    </div>
 </template>
 
 <template name="event_thumb">
   <li class="span3" data-id="{{_id}}">
     <div class="thumbnail">
+        {{#if has_liked_this}}
+        {{/if}}
         <button class="btn delete">Delete</button>
         <button class="btn like">Like</button>
         <button class="btn save">Save</button>

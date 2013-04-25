@@ -75,7 +75,7 @@ Meteor.methods({
       throw new Meteor.Error(403, "You must be logged in!");
 
     return Events.insert({
-      timstamp: Date.now(),
+      timestamp: Date.now(),
       owner: this.userId,
       title: options.title,
       date: options.date,
@@ -84,6 +84,7 @@ Meteor.methods({
       planning: options.planning,
       mode: options.mode,
       image_url: options.image_url,
+      school: options.school,
       ratings: [],
       comments: [],
       likes: [],

@@ -85,9 +85,107 @@ Template.header.events({
   'click .draft': function () {
     Session.set("draft_event_error", null);
     Session.set("show_draft_event_dialog", true);
+  },
+
+  'click .populate': function () {
+    if (Events.find().count() === 0) {
+    var titles = [
+        "Freshman Orientation Session",
+        "Big Sisters/Little Sisters",
+        "Passing the Torch",
+        "SURG Meetings",
+        "Dessert Study Breaks",
+        "Invited Speaker Series",
+        "Advice on Grad School",
+        "Grant Proposals",
+        "Grace Hopper Scholarships",
+        "Expanding Your Horizons",
+        "Girls, Technology, & Education Forum",
+        "Welcome Potluck",
+        "Breakfast Breaks",
+        "End of Year Picnic",
+        "Logo Design Competition",
+        "Road Trips",
+        "Unix Help Session",
+        "Women's Self Defense Event",
+        "Internation Student Event",
+        "Toy Hacking Workshop",
+        "WiCS Goes to Blizzard",
+        "Letter of Recommendation Workshop",
+        "Google Career Panel", 
+        "Open Source Workshop",
+        "Microsoft Manicures",
+        "IBM Ice Cream Social",
+        "Microsoft Video Game Tourney",
+        "Bring a Girl Scout to Class Day",
+        "Karaoke Night",
+        "Algorithms Study Group",
+        "Getting Your First Internship",
+        "Skating with WiCS",
+        "Mentorship Mixer",
+        "New Website Hackathon",
+        "Tech Nights",
+        "Goldman Sachs Breakfast",
+        "Blackrock Site Visit",
+        "Silicon Shire",
+        "Mad Duck Science",
+        "Robotics Meet and Greet",
+        "Project HATCH",
+        "Hiking Cold Springs Trail",
+        "Coffee Hour",
+        "A Day in the Life Of ...",
+        "Etsy Picnic",
+        "STEM Panel",
+        "Maker Faire",
+        "Ice Cream + Brownie Social",
+        "Event with Girl Scouts",
+        "Volleyball and Lemonade Party",
+        "Firefox Day",
+        "Free HUGS",
+        "Donut Hour",
+        "Love Your Computer",
+        "Chinese New Year",
+        "Halloween Potluck",
+        "Vanguard Guest Speaker",
+      ];
+      var schools = [
+        {name: "University of Pennsylvania", nickname: "UPenn"},
+        {name: "Carnegie Mellon", nickname: "CMU"},
+        {name: "Stanford University", nickname: "Stanford"},
+        {name: "University of Washington", nickname: "UW"},
+        {name: "Bren School", nickname: "Bren School"},
+        {name: "Brown University", nickname: "Brown"},
+        {name: "Columbia University", nickname: "Columbia"},
+        {name: "Tufts University", nickname: "Tufts"},
+        {name: "University of Oregon", nickname: " UO"},
+        {name: "University of California, Santa Barbara", nickname: "UCSB"},
+        {name: "Michigan Tech University", nickname: "Michigan Tech"},
+        {name: "University of Arizona", nickname: "University of Arizona"},
+        {name: "Stony Brook University", nickname: "Stony Brook"},
+        {name: "Drexel University", nickname: "Drexel"},
+        {name: "Sonoma State University", nickname: "Sonoma State"}
+      ];
+      var costs = [ '50', '100', '500' ];
+      var times = [ 'hour', 'day', 'week', 'month', 'semester' ];
+
+      for (var i=0; i < titles.length; i++) {
+        Meteor.call('createEvent', {
+            title: titles[i],
+            description: "",
+            cost: costs[getRandomInt(0, costs.length)], 
+            planning: times[getRandomInt(0, times.length)],
+            image_url: 'http://placehold.it/220x220',
+            mode: 'live',
+            school: schools[getRandomInt(0, 10)]['nickname']
+          });
+      }
+    }
   }
 });
 
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 Template.header.events(okCancelEvents(
   '.search-box',
   {
@@ -113,19 +211,68 @@ Template.page.helpers({
 * Home Page Template 
 *
 */
-Template.home_page.event_thumbs = function () {
+Template.home_page.event_thumbs = function () {    
   var query = Session.get('search_query');
+  var filter = Session.get('filtered_search_query');
   if (query) {
     return Events.find({
       title: {$regex: ".*"+query+".*", $options: 'i'},
       mode: {$in: ['live', 'draft']}
     });
   }
+  else if (filter) {
+    var cost = filter[0], planning = filter[1];
+
+    if (cost && planning) {
+      return Events.find({
+        cost: cost,
+        planning: planning
+      });
+    }
+    else if (cost) {
+      return Events.find({
+        cost: cost
+      });
+    }
+    else {
+      return Events.find({
+        planning: planning
+      });
+    }    
+  }
   else {
     return Events.find({mode: {$in: ['live', 'draft']}});
   }
 };
 
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/********************************************************
+* Filter
+*
+*/
+Template.filter.events({
+  'click .filter': function (event, template) {
+    var cost = getSelected(template, "[name=costOptions] option");
+    var planning = getSelected(template, "[name=planningOptions] option");
+    if (cost !== "" || planning !== "") {
+      Session.set('filtered_search_query', [cost, planning]);
+    }
+    else {
+      Session.set('filtered_search_query', null);
+    }
+  }
+});
+
+function getSelected(template, query) {
+  var result = template.findAll(query);
+  for (var i=0; i < result.length; i++) {
+    if (result[i].selected)
+      return result[i].value;
+  }
+}
 
 /********************************************************
 * Event Thumbs
@@ -141,6 +288,19 @@ Template.event_thumb.helpers({
       return event_owner.profile.name;
     else 
       return event_owner.emails[0].address;
+  },
+
+  // TODO: this has been put on hold
+  has_liked_this: function () {
+    // // return Events.find({
+    // //   title: {$regex: ".*"+query+".*", $options: 'i'},
+    // //   mode: {$in: ['live', 'draft']}
+    // // });
+    // var evt = Events.find({
+    //   _id: this._id,
+    //   'likes.userId': {$in: [ Meteor.userId() ] }
+    // });
+    // console.log(evt)
   }
 });
 
@@ -244,6 +404,7 @@ var Router = Backbone.Router.extend({
     Session.set("current_page", "event_page");
     Session.set("event_id", event_id);
     Session.set('search_query', null);
+    Session.set('filtered_search_query', null);
   },
 
   user: function (user_id) {
@@ -251,6 +412,7 @@ var Router = Backbone.Router.extend({
     Session.set("current_section", "my_profile");
     Session.set("user_id", user_id);
     Session.set('search_query', null);
+    Session.set('filtered_search_query', null);
   },
 
   search: function (query) {
@@ -265,3 +427,14 @@ var app = new Router;
 Meteor.startup(function () {
   Backbone.history.start({pushState: true});
 });
+
+/********************************************************
+* Helper functions
+*
+*/
+
+/**
+* Finds a checked input element from a Meteor template 
+* and returns its value.
+*/
+
